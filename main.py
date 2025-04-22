@@ -34,19 +34,19 @@ async def get_shape_by_id(shape_id: int):
 
 @app.post("/shapes")
 async def post_shape(shape: Shape):
-    shapes.insert_one(shape.dict())
+    shapes.insert_one(shape.model_dump())
     return shape
 
 @app.put("/shapes/{shape_id}")
 async def update_shape(shape_id: int, shape: Shape):
     if shapes.count_documents({"id": shape_id}) > 0:
-        shapes.replace_one({"id": shape_id}, shape.dict())
+        shapes.replace_one({"id": shape_id}, shape.model_dump())
         return shape
     raise HTTPException(status_code=404, detail=f"No shape with id {shape_id} found")
 
 @app.put("/shapes/upsert/{shape_id}")
 async def update_shape(shape_id: int, shape: Shape):
-    shapes.replace_one({"id": shape_id}, shape.dict(), upsert=True)
+    shapes.replace_one({"id": shape_id}, shape.model_dump(), upsert=True)
     return shape
 
 @app.delete("/shapes/{shape_id}")
